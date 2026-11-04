@@ -19,10 +19,12 @@ qr_video_bundler.py                 手机录屏
 
 ```
 scripts/
-├── qr_video_bundler.py   # 编码端：文件/目录 → 分块 → QR 视频（需 qrcode、Pillow、FFmpeg）
-├── decode_from_video.py  # 解码端：视频 或 扫码 .txt 目录 → 还原文件（需 cv2、pyboof）
-└── dump_chunks.py        # 辅助：解码视频并把每个块落盘为 chunk_XXX.txt，
-                          # 便于用手机补扫缺失块后走 txt 目录模式重建
+├── qr_video_bundler.py    # 视频编码端：文件/目录 → 分块 → QR 视频（需 qrcode、Pillow、FFmpeg）
+├── decode_from_video.py   # 视频解码端：视频 或 扫码 .txt 目录 → 还原文件（需 cv2、pyboof）
+├── dump_chunks.py         # 辅助：解码视频并把每个块落盘为 chunk_XXX.txt，
+│                          # 便于用手机补扫缺失块后走 txt 目录模式重建
+├── qr_image_bundler.py    # 图片编码端（简化版，适合 <100KB 小文件）：文件 → 每块一张 QR 图片
+└── decode_from_images.py  # 图片解码端：QR 图片目录 或 扫码 .txt 目录 → 还原文件
 ```
 
 ## 安装
@@ -57,6 +59,21 @@ python scripts/decode_from_video.py <手机录屏.mp4> [-o 输出目录]
 ```bash
 python scripts/decode_from_video.py <txt文件目录> [-o 输出目录]
 # 每个 txt 内容格式: "X/N,base64数据"，文件名任意
+```
+
+### 图片模式（小文件简化版）
+
+源端生成每块一张的二维码图片（无需 FFmpeg，适合 <100KB 的小文件）：
+
+```bash
+python scripts/qr_image_bundler.py <文件或目录> -o <输出目录>
+# 产出 qr_0001.png、qr_0002.png ... + index.json
+```
+
+目的端从图片目录或手机扫码 txt 目录还原：
+
+```bash
+python scripts/decode_from_images.py <图片目录或txt目录> [-o 输出目录]
 ```
 
 ### 缺块补救
