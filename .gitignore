@@ -1,0 +1,19 @@
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+
+# 大文件 / 运行产物
+*.mp4
+*.tar.gz
+output*/
+chunks_*/
+*.log
+frame_*.png
+debug*.png
+
+# 系统/编辑器
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

@@ -1,0 +1,5 @@
+numpy==1.26.2
+opencv-python-headless==4.11.0.86
+pyboof==0.43.1
+qrcode
+Pillow
