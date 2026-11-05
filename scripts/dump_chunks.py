@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
-"""重新解码 手机录屏20261103.mp4，把每个唯一块实时写入 chunks_2/ 目录。
+"""重新解码视频，把每个唯一块实时写入块目录。
 
 与 decode_from_video.py 的区别：块内容落盘为 chunk_XXX.txt，
-便于与手机扫描的 0 号块合并后走 txt 目录模式重建。
+便于与手机扫描的缺失块合并后走 txt 目录模式重建。
 其余解码逻辑（PhoneScanQRDecoder、区域定位、多尺度）完全复用原脚本。
+
+用法:
+    python dump_chunks.py <视频文件> <块输出目录>
+示例:
+    python dump_chunks.py 手机录屏20261103.mp4 chunks_2
 """
 
 import os
@@ -12,16 +17,16 @@ from pathlib import Path
 
 import decode_from_video as dvm
 
-VIDEO = '手机录屏20261103.mp4'
-OUT_DIR = Path('chunks_2')
-OUT_DIR.mkdir(exist_ok=True)
-
 
 def main():
     import cv2
     import numpy as np
 
-    cap = cv2.VideoCapture(VIDEO)
+    if len(sys.argv) < 3:
+        print(__doc__)
+        sys.exit(1)
+    video, out_dir = sys.argv[1], Path(sys.argv[2])
+    out_dir.mkdir(exist_ok=True)
     total = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     decoder = dvm.PhoneScanQRDecoder()
 
@@ -41,7 +46,7 @@ def main():
                     total_chunks = chunk_total
                 if index not in chunks:
                     chunks[index] = text
-                    (OUT_DIR / f'chunk_{index:03d}.txt').write_text(
+                    (out_dir / f'chunk_{index:03d}.txt').write_text(
                         text, encoding='utf-8')
                     print(f'  块 {index}/{chunk_total} 已保存', flush=True)
         fi += 1
