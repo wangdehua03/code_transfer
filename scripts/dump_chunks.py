@@ -27,6 +27,9 @@ def main():
         sys.exit(1)
     video, out_dir = sys.argv[1], Path(sys.argv[2])
     out_dir.mkdir(exist_ok=True)
+
+    print(f'视频: {video} → 块目录: {out_dir}', flush=True)
+    cap = cv2.VideoCapture(video)
     total = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     decoder = dvm.PhoneScanQRDecoder()
 
